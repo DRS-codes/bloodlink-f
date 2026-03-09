@@ -1,327 +1,1085 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BloodLink</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Nunito',sans-serif;min-height:100vh;background:linear-gradient(135deg,#FF6B6B,#FF8E53,#FFC300,#2ECC71,#1ABC9C,#3498DB,#9B59B6);background-size:400% 400%;animation:bg 8s ease infinite}
-@keyframes bg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BloodLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* floating bubbles */
-.bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.bubble{position:absolute;border-radius:50%;opacity:.18;animation:rise linear infinite}
-@keyframes rise{0%{transform:translateY(110vh) scale(0)}100%{transform:translateY(-10vh) scale(1)}}
-.bubble:nth-child(1){width:80px;height:80px;background:#FF6B6B;left:10%;animation-duration:9s;animation-delay:0s}
-.bubble:nth-child(2){width:50px;height:50px;background:#FFC300;left:25%;animation-duration:12s;animation-delay:2s}
-.bubble:nth-child(3){width:100px;height:100px;background:#2ECC71;left:45%;animation-duration:10s;animation-delay:1s}
-.bubble:nth-child(4){width:60px;height:60px;background:#3498DB;left:65%;animation-duration:14s;animation-delay:3s}
-.bubble:nth-child(5){width:90px;height:90px;background:#9B59B6;left:80%;animation-duration:11s;animation-delay:0.5s}
-.bubble:nth-child(6){width:40px;height:40px;background:#FF8E53;left:55%;animation-duration:8s;animation-delay:4s}
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53, #FFC300, #2ECC71, #1ABC9C, #3498DB, #9B59B6);
+      background-size: 400% 400%;
+      animation: bg 8s ease infinite
+    }
 
-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(0,0,0,0.28);backdrop-filter:blur(18px);border-bottom:2px solid rgba(255,255,255,0.2)}
-.logo{font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px}
-.logo-icon{font-size:28px;animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
-#ab{font-size:12px;font-weight:800;padding:7px 16px;border-radius:20px;background:rgba(255,255,255,0.2);color:#fff;border:2px solid rgba(255,255,255,0.4);transition:all .4s}
-#ab.ok{background:rgba(46,204,113,0.45);border-color:#2ECC71;animation:glow 2s ease-in-out infinite}
-@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(46,204,113,0.5)}50%{box-shadow:0 0 20px rgba(46,204,113,0.9)}}
+    @keyframes bg {
 
-.wrap{position:relative;z-index:1;display:grid;grid-template-columns:190px 1fr;min-height:calc(100vh - 58px)}
+      0%,
+      100% {
+        background-position: 0% 50%
+      }
 
-nav{padding:14px 10px;background:rgba(0,0,0,0.22);backdrop-filter:blur(14px);border-right:2px solid rgba(255,255,255,0.15)}
-.nt{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);padding:0 8px 6px;margin-top:14px}
-.nt:first-child{margin-top:0}
-.ni{display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;color:rgba(255,255,255,0.65);transition:all .2s;margin-bottom:3px;border:2px solid transparent}
-.ni:hover{background:rgba(255,255,255,0.18);color:#fff;transform:translateX(4px)}
-.ni.active{background:rgba(255,255,255,0.25);color:#fff;border-color:rgba(255,255,255,0.35)}
+      50% {
+        background-position: 100% 50%
+      }
+    }
 
-main{padding:28px 36px;overflow-y:auto}
-.pg{display:none;animation:up .3s cubic-bezier(.16,1,.3,1)}
-.pg.active{display:block}
-@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    /* floating bubbles */
+    .bubbles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0
+    }
 
-.ph{margin-bottom:20px}
-.ph h2{font-size:24px;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.35);margin-bottom:4px}
-.ph p{font-size:13px;color:rgba(255,255,255,0.8);font-weight:600}
-.ep{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(0,0,0,0.3);border:1.5px solid rgba(255,255,255,0.25);border-radius:6px;padding:4px 12px;font-family:monospace;font-size:11px;color:rgba(255,255,255,0.9)}
-.mp{background:#FF6B6B;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px}
-.mg{background:#2ECC71;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px}
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .18;
+      animation: rise linear infinite
+    }
 
-.card{background:rgba(255,255,255,0.14);backdrop-filter:blur(22px);border:2px solid rgba(255,255,255,0.3);border-radius:18px;padding:24px;animation:fadeIn .4s ease}
-@keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.f{margin-bottom:16px}
-label{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-bottom:5px}
-input,select{width:100%;padding:10px 14px;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.28);border-radius:10px;color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;transition:all .2s}
-input::placeholder{color:rgba(255,255,255,0.4)}
-input:focus,select:focus{outline:none;border-color:#fff;background:rgba(255,255,255,0.26);transform:scale(1.01)}
-input[readonly]{opacity:.5;cursor:not-allowed}
-select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='white'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;appearance:none}
-select option{background:#5B21B6}
-.hint{font-size:11px;color:rgba(255,255,255,0.55);margin-top:4px;font-style:italic}
+    @keyframes rise {
+      0% {
+        transform: translateY(110vh) scale(0)
+      }
 
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;background:#fff;color:#333;position:relative;overflow:hidden}
-.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .2s}
-.btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
-.btn:active{transform:translateY(-1px)}
-.btn-o{background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.4);color:#fff}
-.btn-o:hover{background:rgba(255,255,255,0.28)}
-.brow{display:flex;gap:10px;margin-top:10px}
+      100% {
+        transform: translateY(-10vh) scale(1)
+      }
+    }
 
-.resp{display:none;margin-top:14px;border-radius:10px;overflow:hidden;animation:up .2s ease}
-.resp.show{display:block}
-.rh{padding:8px 14px;font-size:11px;font-weight:800;letter-spacing:.06em}
-.resp.ok .rh{background:rgba(46,204,113,0.3);color:#fff}
-.resp.err .rh{background:rgba(255,107,107,0.3);color:#fff}
-.resp pre{background:rgba(0,0,0,0.38);padding:14px;font-family:monospace;font-size:11px;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;color:#fff}
+    .bubble:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      background: #FF6B6B;
+      left: 10%;
+      animation-duration: 9s;
+      animation-delay: 0s
+    }
 
-/* inventory */
-.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px;margin-top:16px}
-.bc{border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,0.3);transition:all .25s;animation:up .35s ease both}
-.bc:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 14px 40px rgba(0,0,0,0.3)}
-.bc:nth-child(6n+1){background:linear-gradient(135deg,#FF6B6B,#FF8E53)}
-.bc:nth-child(6n+2){background:linear-gradient(135deg,#3498DB,#1ABC9C)}
-.bc:nth-child(6n+3){background:linear-gradient(135deg,#FFC300,#FF6B6B)}
-.bc:nth-child(6n+4){background:linear-gradient(135deg,#9B59B6,#3498DB)}
-.bc:nth-child(6n+5){background:linear-gradient(135deg,#2ECC71,#3498DB)}
-.bc:nth-child(6n+6){background:linear-gradient(135deg,#FF8E53,#FFC300)}
-.bct{padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start}
-.btype{font-size:2.3rem;font-weight:900;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.25);line-height:1}
-.bq{text-align:right;color:#fff}
-.bqn{font-size:1.5rem;font-weight:900;line-height:1}
-.bqu{font-size:9px;font-weight:800;opacity:.75;letter-spacing:.06em}
-.avl{font-size:9px;font-weight:800;padding:3px 9px;border-radius:20px;margin-top:6px;display:inline-block;background:rgba(255,255,255,0.25);color:#fff;border:1.5px solid rgba(255,255,255,0.4)}
-.bcb{padding:12px 16px;background:rgba(0,0,0,0.2)}
-.br{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:12px}
-.br:last-of-type{border:none}
-.bk{color:rgba(255,255,255,0.55);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-.bv{color:#fff;font-weight:700;max-width:55%;text-align:right;word-break:break-all}
-.bid{font-family:monospace;font-size:9px;color:rgba(255,255,255,0.45);padding-top:6px;word-break:break-all}
+    .bubble:nth-child(2) {
+      width: 50px;
+      height: 50px;
+      background: #FFC300;
+      left: 25%;
+      animation-duration: 12s;
+      animation-delay: 2s
+    }
 
-.empty{padding:60px 20px;text-align:center;color:rgba(255,255,255,0.7)}
-.ei{font-size:42px;margin-bottom:12px;animation:bounce 2s ease-in-out infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.empty h3{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px}
-.loading{display:flex;align-items:center;gap:10px;padding:40px 0;color:#fff;font-size:14px;font-weight:700}
-.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.3);border-radius:4px}
+    .bubble:nth-child(3) {
+      width: 100px;
+      height: 100px;
+      background: #2ECC71;
+      left: 45%;
+      animation-duration: 10s;
+      animation-delay: 1s
+    }
 
-@media(max-width:700px){
-  .wrap{grid-template-columns:1fr}
-  nav{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-right:none;border-bottom:2px solid rgba(255,255,255,0.15)}
-  .nt{display:none}.ni{padding:7px 10px}
-  main{padding:16px}.g2{grid-template-columns:1fr}
-}
-</style>
+    .bubble:nth-child(4) {
+      width: 60px;
+      height: 60px;
+      background: #3498DB;
+      left: 65%;
+      animation-duration: 14s;
+      animation-delay: 3s
+    }
+
+    .bubble:nth-child(5) {
+      width: 90px;
+      height: 90px;
+      background: #9B59B6;
+      left: 80%;
+      animation-duration: 11s;
+      animation-delay: 0.5s
+    }
+
+    .bubble:nth-child(6) {
+      width: 40px;
+      height: 40px;
+      background: #FF8E53;
+      left: 55%;
+      animation-duration: 8s;
+      animation-delay: 4s
+    }
+
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(18px);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2)
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .logo-icon {
+      font-size: 28px;
+      animation: pulse 1.8s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.2)
+      }
+    }
+
+    #ab {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      transition: all .4s
+    }
+
+    #ab.ok {
+      background: rgba(46, 204, 113, 0.45);
+      border-color: #2ECC71;
+      animation: glow 2s ease-in-out infinite
+    }
+
+    @keyframes glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 8px rgba(46, 204, 113, 0.5)
+      }
+
+      50% {
+        box-shadow: 0 0 20px rgba(46, 204, 113, 0.9)
+      }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      min-height: calc(100vh - 58px)
+    }
+
+    nav {
+      padding: 14px 10px;
+      background: rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(14px);
+      border-right: 2px solid rgba(255, 255, 255, 0.15)
+    }
+
+    .nt {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      padding: 0 8px 6px;
+      margin-top: 14px
+    }
+
+    .nt:first-child {
+      margin-top: 0
+    }
+
+    .ni {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.65);
+      transition: all .2s;
+      margin-bottom: 3px;
+      border: 2px solid transparent
+    }
+
+    .ni:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      transform: translateX(4px)
+    }
+
+    .ni.active {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35)
+    }
+
+    main {
+      padding: 28px 36px;
+      overflow-y: auto
+    }
+
+    .pg {
+      display: none;
+      animation: up .3s cubic-bezier(.16, 1, .3, 1)
+    }
+
+    .pg.active {
+      display: block
+    }
+
+    @keyframes up {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .ph {
+      margin-bottom: 20px
+    }
+
+    .ph h2 {
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+      margin-bottom: 4px
+    }
+
+    .ph p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600
+    }
+
+    .ep {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.9)
+    }
+
+    .mp {
+      background: #FF6B6B;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px
+    }
+
+    .mg {
+      background: #2ECC71;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 18px;
+      padding: 24px;
+      animation: fadeIn .4s ease
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(.97)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    .f {
+      margin-bottom: 16px
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 5px
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all .2s
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.4)
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.26);
+      transform: scale(1.01)
+    }
+
+    input[readonly] {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='white'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      appearance: none
+    }
+
+    select option {
+      background: #5B21B6
+    }
+
+    .hint {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-top: 4px;
+      font-style: italic
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fff;
+      color: #333;
+      position: relative;
+      overflow: hidden
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0);
+      transition: background .2s
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3)
+    }
+
+    .btn:active {
+      transform: translateY(-1px)
+    }
+
+    .btn-o {
+      background: rgba(255, 255, 255, 0.18);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      color: #fff
+    }
+
+    .btn-o:hover {
+      background: rgba(255, 255, 255, 0.28)
+    }
+
+    .brow {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .resp {
+      display: none;
+      margin-top: 14px;
+      border-radius: 10px;
+      overflow: hidden;
+      animation: up .2s ease
+    }
+
+    .resp.show {
+      display: block
+    }
+
+    .rh {
+      padding: 8px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em
+    }
+
+    .resp.ok .rh {
+      background: rgba(46, 204, 113, 0.3);
+      color: #fff
+    }
+
+    .resp.err .rh {
+      background: rgba(255, 107, 107, 0.3);
+      color: #fff
+    }
+
+    .resp pre {
+      background: rgba(0, 0, 0, 0.38);
+      padding: 14px;
+      font-family: monospace;
+      font-size: 11px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 200px;
+      overflow-y: auto;
+      color: #fff
+    }
+
+    /* inventory */
+    .ig {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+      gap: 14px;
+      margin-top: 16px
+    }
+
+    .bc {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all .25s;
+      animation: up .35s ease both
+    }
+
+    .bc:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3)
+    }
+
+    .bc:nth-child(6n+1) {
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53)
+    }
+
+    .bc:nth-child(6n+2) {
+      background: linear-gradient(135deg, #3498DB, #1ABC9C)
+    }
+
+    .bc:nth-child(6n+3) {
+      background: linear-gradient(135deg, #FFC300, #FF6B6B)
+    }
+
+    .bc:nth-child(6n+4) {
+      background: linear-gradient(135deg, #9B59B6, #3498DB)
+    }
+
+    .bc:nth-child(6n+5) {
+      background: linear-gradient(135deg, #2ECC71, #3498DB)
+    }
+
+    .bc:nth-child(6n+6) {
+      background: linear-gradient(135deg, #FF8E53, #FFC300)
+    }
+
+    .bct {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start
+    }
+
+    .btype {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+      line-height: 1
+    }
+
+    .bq {
+      text-align: right;
+      color: #fff
+    }
+
+    .bqn {
+      font-size: 1.5rem;
+      font-weight: 900;
+      line-height: 1
+    }
+
+    .bqu {
+      font-size: 9px;
+      font-weight: 800;
+      opacity: .75;
+      letter-spacing: .06em
+    }
+
+    .avl {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-top: 6px;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.4)
+    }
+
+    .bcb {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2)
+    }
+
+    .br {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px
+    }
+
+    .br:last-of-type {
+      border: none
+    }
+
+    .bk {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    .bv {
+      color: #fff;
+      font-weight: 700;
+      max-width: 55%;
+      text-align: right;
+      word-break: break-all
+    }
+
+    .bid {
+      font-family: monospace;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.45);
+      padding-top: 6px;
+      word-break: break-all
+    }
+
+    .empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7)
+    }
+
+    .ei {
+      font-size: 42px;
+      margin-bottom: 12px;
+      animation: bounce 2s ease-in-out infinite
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-10px)
+      }
+    }
+
+    .empty h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 40px 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700
+    }
+
+    .spin {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px
+    }
+
+    @media(max-width:700px) {
+      .wrap {
+        grid-template-columns: 1fr
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 8px;
+        border-right: none;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.15)
+      }
+
+      .nt {
+        display: none
+      }
+
+      .ni {
+        padding: 7px 10px
+      }
+
+      main {
+        padding: 16px
+      }
+
+      .g2 {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- floating bubbles -->
-<div class="bubbles">
-  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-</div>
+  <!-- floating bubbles -->
+  <div class="bubbles">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
 
-<header>
-  <div class="logo"><span class="logo-icon">🩸</span> BloodLink</div>
-  <div id="ab">Not signed in</div>
-</header>
+  <header>
+    <div class="logo"><span class="logo-icon">🩸</span> BloodLink</div>
+    <div id="ab">Not signed in</div>
+  </header>
 
-<div class="wrap">
-  <nav>
-    <div class="nt">Account</div>
-    <div class="ni active" onclick="show('p1',this)">🏥 Provider</div>
-    <div class="ni" onclick="show('p2',this)">👤 Needer</div>
-    <div class="ni" onclick="show('p3',this)">🔑 Login</div>
-    <div class="nt">Inventory</div>
-    <div class="ni" onclick="show('p4',this)">➕ Post Blood</div>
-    <div class="ni" onclick="show('p5',this)">📋 View Stock</div>
-    <div class="nt">Emergency</div>
-    <div class="ni" onclick="show('p6',this)">🆘 Request</div>
-  </nav>
+  <div class="wrap">
+    <nav>
+      <div class="nt">Account</div>
+      <div class="ni active" onclick="show('p1',this)">🏥 Provider</div>
+      <div class="ni" onclick="show('p2',this)">👤 Needer</div>
+      <div class="ni" onclick="show('p3',this)">🔑 Login</div>
+      <div class="nt">Inventory</div>
+      <div class="ni" onclick="show('p4',this)">➕ Post Blood</div>
+      <div class="ni" onclick="show('p5',this)">📋 View Stock</div>
+      <div class="nt">Emergency</div>
+      <div class="ni" onclick="show('p6',this)">🆘 Request</div>
+    </nav>
 
-  <main>
+    <main>
 
-    <div id="p1" class="pg active">
-      <div class="ph"><h2>🏥 Register Provider</h2><p>Institution account to manage blood inventory.</p>
-        <div class="ep"><span class="mp">POST</span>/api/users/register</div></div>
-      <div class="card">
-        <form onsubmit="regProvider(event)">
-          <div class="g2">
-            <div class="f"><label>Institution Name</label><input id="a1" required placeholder="City Blood Bank"></div>
-            <div class="f"><label>Email</label><input type="email" id="a2" required placeholder="bank@example.com"></div>
-          </div>
-          <div class="g2">
-            <div class="f"><label>Password</label><input type="password" id="a3" required placeholder="Secure password"></div>
-            <div class="f"><label>Role</label><input value="provider" readonly></div>
-          </div>
-          <div class="f"><label>Service Cities</label><input id="a4" required placeholder="Mumbai, Pune, Nagpur"><div class="hint">Comma separated</div></div>
-          <div class="brow"><button class="btn" type="submit">✅ Register →</button></div>
-        </form>
-        <div id="r1" class="resp"></div>
+      <div id="p1" class="pg active">
+        <div class="ph">
+          <h2>🏥 Register Provider</h2>
+          <p>Institution account to manage blood inventory.</p>
+          <div class="ep"><span class="mp">POST</span>/api/users/register</div>
+        </div>
+        <div class="card">
+          <form onsubmit="regProvider(event)">
+            <div class="g2">
+              <div class="f"><label>Institution Name</label><input id="a1" required placeholder="City Blood Bank"></div>
+              <div class="f"><label>Email</label><input type="email" id="a2" required placeholder="bank@example.com">
+              </div>
+            </div>
+            <div class="g2">
+              <div class="f"><label>Password</label><input type="password" id="a3" required
+                  placeholder="Secure password"></div>
+              <div class="f"><label>Role</label><input value="provider" readonly></div>
+            </div>
+            <div class="f"><label>Service Cities</label><input id="a4" required placeholder="Mumbai, Pune, Nagpur">
+              <div class="hint">Comma separated</div>
+            </div>
+            <div class="brow"><button class="btn" type="submit">✅ Register →</button></div>
+          </form>
+          <div id="r1" class="resp"></div>
+        </div>
       </div>
-    </div>
 
-    <div id="p2" class="pg">
-      <div class="ph"><h2>👤 Register Needer</h2><p>Personal account to search and request blood.</p>
-        <div class="ep"><span class="mp">POST</span>/api/users/register</div></div>
-      <div class="card">
-        <form onsubmit="regNeeder(event)">
-          <div class="g2">
-            <div class="f"><label>Full Name</label><input id="b1" required placeholder="John Doe"></div>
-            <div class="f"><label>Email</label><input type="email" id="b2" required placeholder="john@example.com"></div>
-          </div>
-          <div class="g2">
-            <div class="f"><label>Password</label><input type="password" id="b3" required placeholder="Secure password"></div>
-            <div class="f"><label>Role</label><input value="needer" readonly></div>
-          </div>
-          <div class="brow"><button class="btn" type="submit">✅ Create Account →</button></div>
-        </form>
-        <div id="r2" class="resp"></div>
+      <div id="p2" class="pg">
+        <div class="ph">
+          <h2>👤 Register Needer</h2>
+          <p>Personal account to search and request blood.</p>
+          <div class="ep"><span class="mp">POST</span>/api/users/register</div>
+        </div>
+        <div class="card">
+          <form onsubmit="regNeeder(event)">
+            <div class="g2">
+              <div class="f"><label>Full Name</label><input id="b1" required placeholder="John Doe"></div>
+              <div class="f"><label>Email</label><input type="email" id="b2" required placeholder="john@example.com">
+              </div>
+            </div>
+            <div class="g2">
+              <div class="f"><label>Password</label><input type="password" id="b3" required
+                  placeholder="Secure password"></div>
+              <div class="f"><label>Role</label><input value="needer" readonly></div>
+            </div>
+            <div class="brow"><button class="btn" type="submit">✅ Create Account →</button></div>
+          </form>
+          <div id="r2" class="resp"></div>
+        </div>
       </div>
-    </div>
 
-    <div id="p3" class="pg">
-      <div class="ph"><h2>🔑 Sign In</h2><p>Get your auth token for posting and requesting.</p>
-        <div class="ep"><span class="mp">POST</span>/api/users/login</div></div>
-      <div class="card">
-        <form onsubmit="doLogin(event)">
-          <div class="g2">
-            <div class="f"><label>Email</label><input type="email" id="c1" required placeholder="you@example.com"></div>
-            <div class="f"><label>Password</label><input type="password" id="c2" required placeholder="Your password"></div>
-          </div>
-          <div class="brow"><button class="btn" type="submit">🔓 Sign In →</button></div>
-        </form>
-        <div id="r3" class="resp"></div>
+      <div id="p3" class="pg">
+        <div class="ph">
+          <h2>🔑 Sign In</h2>
+          <p>Get your auth token for posting and requesting.</p>
+          <div class="ep"><span class="mp">POST</span>/api/users/login</div>
+        </div>
+        <div class="card">
+          <form onsubmit="doLogin(event)">
+            <div class="g2">
+              <div class="f"><label>Email</label><input type="email" id="c1" required placeholder="you@example.com">
+              </div>
+              <div class="f"><label>Password</label><input type="password" id="c2" required placeholder="Your password">
+              </div>
+            </div>
+            <div class="brow"><button class="btn" type="submit">🔓 Sign In →</button></div>
+          </form>
+          <div id="r3" class="resp"></div>
+        </div>
       </div>
-    </div>
 
-    <div id="p4" class="pg">
-      <div class="ph"><h2>🩸 Post Blood</h2><p>Add stock — visible to all needers instantly.</p>
-        <div class="ep"><span class="mp">POST</span>/api/blood</div></div>
-      <div class="card">
-        <form onsubmit="postBlood(event)">
-          <div class="g2">
-            <div class="f"><label>Blood Type</label><select id="d1" required><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
-            <div class="f"><label>Quantity</label><input type="number" id="d2" required placeholder="5" min="0"></div>
-          </div>
-          <div class="g2">
-            <div class="f"><label>Institution Email/ID</label><input id="d3" required placeholder="city@example.com"></div>
-            <div class="f"><label>Location</label><input id="d4" required placeholder="Mumbai"></div>
-          </div>
-          <div class="f"><label>Availability</label><select id="d5"><option value="true">✓ Available</option><option value="false">✗ Unavailable</option></select></div>
-          <div class="brow"><button class="btn" type="submit">📤 Post →</button></div>
-        </form>
-        <div id="r4" class="resp"></div>
+      <div id="p4" class="pg">
+        <div class="ph">
+          <h2>🩸 Post Blood</h2>
+          <p>Add stock — visible to all needers instantly.</p>
+          <div class="ep"><span class="mp">POST</span>/api/blood</div>
+        </div>
+        <div class="card">
+          <form onsubmit="postBlood(event)">
+            <div class="g2">
+              <div class="f"><label>Blood Type</label><select id="d1" required>
+                  <option value="">Select</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                </select></div>
+              <div class="f"><label>Quantity</label><input type="number" id="d2" required placeholder="5" min="0"></div>
+            </div>
+            <div class="g2">
+              <div class="f"><label>Institution Email/ID</label><input id="d3" required placeholder="city@example.com">
+              </div>
+              <div class="f"><label>Location</label><input id="d4" required placeholder="Mumbai"></div>
+            </div>
+            <div class="f"><label>Availability</label><select id="d5">
+                <option value="true">✓ Available</option>
+                <option value="false">✗ Unavailable</option>
+              </select></div>
+            <div class="brow"><button class="btn" type="submit">📤 Post →</button></div>
+          </form>
+          <div id="r4" class="resp"></div>
+        </div>
       </div>
-    </div>
 
-    <div id="p5" class="pg">
-      <div class="ph"><h2>📋 Live Inventory</h2><p>All blood stocks — copy IDs for requests.</p>
-        <div class="ep"><span class="mg">GET</span>/api/blood</div></div>
-      <button class="btn btn-o" onclick="getBlood()">↻ Refresh Inventory</button>
-      <div id="blood-list"><div class="empty"><div class="ei">🩸</div><h3>No data yet</h3><p>Click Refresh to load</p></div></div>
-    </div>
-
-    <div id="p6" class="pg">
-      <div class="ph"><h2>🆘 Emergency Request</h2><p>Submit urgent blood request. Login first for auth.</p>
-        <div class="ep"><span class="mp">POST</span>/api/blood/request</div></div>
-      <div class="card">
-        <form onsubmit="reqBlood(event)">
-          <div class="g2">
-            <div class="f"><label>Patient Name</label><input id="e1" required placeholder="Jane Smith"></div>
-            <div class="f"><label>Ward No.</label><input id="e2" required placeholder="10A"></div>
+      <div id="p5" class="pg">
+        <div class="ph">
+          <h2>📋 Live Inventory</h2>
+          <p>All blood stocks — copy IDs for requests.</p>
+          <div class="ep"><span class="mg">GET</span>/api/blood</div>
+        </div>
+        <button class="btn btn-o" onclick="getBlood()">↻ Refresh Inventory</button>
+        <div id="blood-list">
+          <div class="empty">
+            <div class="ei">🩸</div>
+            <h3>No data yet</h3>
+            <p>Click Refresh to load</p>
           </div>
-          <div class="g2">
-            <div class="f"><label>Hospital Name</label><input id="e3" required placeholder="Sion Hospital"></div>
-            <div class="f"><label>Hospital Address</label><input id="e4" required placeholder="Sion, Mumbai"></div>
-          </div>
-          <div class="g2">
-            <div class="f"><label>Blood Group</label><select id="e5" required><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
-            <div class="f"><label>Status</label><input id="e6" value="pending"></div>
-          </div>
-          <div class="f"><label>Institution IDs</label><input id="e7" required placeholder="68b4055820de0df545a50229"><div class="hint">Comma separated — find in View Stock</div></div>
-          <div class="brow"><button class="btn" type="submit">🚨 Submit Request →</button></div>
-        </form>
-        <div id="r6" class="resp"></div>
+        </div>
       </div>
-    </div>
 
-  </main>
-</div>
+      <div id="p6" class="pg">
+        <div class="ph">
+          <h2>🆘 Emergency Request</h2>
+          <p>Submit urgent blood request. Login first for auth.</p>
+          <div class="ep"><span class="mp">POST</span>/api/blood/request</div>
+        </div>
+        <div class="card">
+          <form onsubmit="reqBlood(event)">
+            <div class="g2">
+              <div class="f"><label>Patient Name</label><input id="e1" required placeholder="Jane Smith"></div>
+              <div class="f"><label>Ward No.</label><input id="e2" required placeholder="10A"></div>
+            </div>
+            <div class="g2">
+              <div class="f"><label>Hospital Name</label><input id="e3" required placeholder="Sion Hospital"></div>
+              <div class="f"><label>Hospital Address</label><input id="e4" required placeholder="Sion, Mumbai"></div>
+            </div>
+            <div class="g2">
+              <div class="f"><label>Blood Group</label><select id="e5" required>
+                  <option value="">Select</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                </select></div>
+              <div class="f"><label>Status</label><input id="e6" value="pending"></div>
+            </div>
+            <div class="f">
+              <label>Select Institution</label>
+              <select id="e7" required>
+                <option value="">Loading institutions...</option>
+              </select>
+            </div>
+            <div class="brow"><button class="btn" type="submit">🚨 Submit Request →</button></div>
+          </form>
+          <div id="r6" class="resp"></div>
+        </div>
+      </div>
 
-<script>
-const API='https://bloodlink-backend-y9lx.onrender.com';
-let token='';
-const v=id=>document.getElementById(id).value;
-const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    </main>
+  </div>
 
-function show(id,el){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(el)el.classList.add('active');
-}
+  <script>
+    // https://bloodlink-backend-y9lx.onrender.com'
+    const API = 'http://127.0.0.1:5000';
+    let token = localStorage.getItem("token");
+    const v = id => document.getElementById(id).value;
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-function showResp(id,data,ok){
-  const el=document.getElementById(id);
-  el.className=`resp show ${ok?'ok':'err'}`;
-  el.innerHTML=`<div class="rh">${ok?'✓ Success':'✗ Error'}</div><pre>${esc(typeof data==='string'?data:JSON.stringify(data,null,2))}</pre>`;
-}
+    async function loadInstitutions() {
+      try {
+        const res = await fetch("http://localhost:5000/api/blood");
+        const data = await res.json();
 
-async function req(url,body,hdrs={'Content-Type':'application/json'}){
-  return fetch(API+url,{method:'POST',headers:hdrs,body:JSON.stringify(body)});
-}
+        const dropdown = document.getElementById("e7");
+        dropdown.innerHTML = "";
 
-async function regProvider(e){e.preventDefault();try{const r=await req('/api/users/register',{name:v('a1'),email:v('a2'),password:v('a3'),role:'provider',location:v('a4').split(',').map(s=>s.trim())});showResp('r1',await r.json(),r.ok);}catch(e){showResp('r1',e.message,false);}}
+        const institutions = [...new Set(data.map(item => item.institution))];
 
-async function regNeeder(e){e.preventDefault();try{const r=await req('/api/users/register',{name:v('b1'),email:v('b2'),password:v('b3'),role:'needer'});showResp('r2',await r.json(),r.ok);}catch(e){showResp('r2',e.message,false);}}
+        institutions.forEach(inst => {
+          const option = document.createElement("option");
+          option.value = inst;
+          option.textContent = inst;
+          dropdown.appendChild(option);
+        });
 
-async function doLogin(e){
-  e.preventDefault();
-  try{
-    const r=await req('/api/users/login',{email:v('c1'),password:v('c2')}),res=await r.json();
-    if(r.ok&&res.token){token=res.token;const b=document.getElementById('ab');b.textContent='✓ Authenticated';b.classList.add('ok');}
-    showResp('r3',res,r.ok);
-  }catch(e){showResp('r3',e.message,false);}
-}
+      } catch (err) {
+        console.error("Error loading institutions:", err);
+      }
+    }
 
-async function postBlood(e){e.preventDefault();try{const r=await req('/api/blood',{bloodType:v('d1'),quantity:+v('d2'),institution:v('d3'),location:v('d4'),available:v('d5')==='true'});showResp('r4',await r.json(),r.ok);}catch(e){showResp('r4',e.message,false);}}
+    loadInstitutions();
 
-async function getBlood(){
-  const el=document.getElementById('blood-list');
-  el.innerHTML='<div class="loading"><div class="spin"></div>Loading inventory…</div>';
-  try{
-    const r=await fetch(`${API}/api/blood`),data=await r.json();
-    if(r.ok&&Array.isArray(data)&&data.length){
-      el.innerHTML=`<div class="ig">${data.map((b,i)=>`
-        <div class="bc" style="animation-delay:${i*.05}s">
+    function show(id, el) {
+      document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (el) el.classList.add('active');
+    }
+
+    function showResp(id, data, ok) {
+      const el = document.getElementById(id);
+      el.className = `resp show ${ok ? 'ok' : 'err'}`;
+      el.innerHTML = `<div class="rh">${ok ? '✓ Success' : '✗ Error'}</div>`;
+    }
+
+    async function req(url, body) {
+      return fetch(API + url, { method: 'POST', headers: authHeaders(), body: JSON.stringify(body) });
+    }
+
+    async function regProvider(e) { e.preventDefault(); try { const r = await req('/api/users/register', { name: v('a1'), email: v('a2'), password: v('a3'), role: 'provider', location: v('a4').split(',').map(s => s.trim()) }); showResp('r1', await r.json(), r.ok); } catch (e) { showResp('r1', e.message, false); } }
+
+    async function regNeeder(e) { e.preventDefault(); try { const r = await req('/api/users/register', { name: v('b1'), email: v('b2'), password: v('b3'), role: 'needer' }); showResp('r2', await r.json(), r.ok); } catch (e) { showResp('r2', e.message, false); } }
+
+    async function doLogin(e) {
+      e.preventDefault();
+
+      try {
+        const r = await req('/api/users/login', {
+          email: v('c1'),
+          password: v('c2')
+        });
+
+        const res = await r.json();
+
+        if (r.ok && res.token) {
+          token = res.token;
+
+          // store token
+          localStorage.setItem("token", token);
+
+          const b = document.getElementById('ab');
+          b.textContent = '✓ Authenticated';
+          b.classList.add('ok');
+        }
+
+        showResp('r3', res, r.ok);
+
+      } catch (e) {
+        showResp('r3', e.message, false);
+      }
+    }
+
+    function authHeaders() {
+      const t = localStorage.getItem("token");
+      return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${t}`
+      };
+    }
+
+    async function postBlood(e) { e.preventDefault(); try { const r = await req('/api/blood', { bloodType: v('d1'), quantity: +v('d2'), institution: v('d3'), location: v('d4'), available: v('d5') === 'true' }); showResp('r4', await r.json(), r.ok); } catch (e) { showResp('r4', e.message, false); } }
+
+    async function getBlood() {
+      const el = document.getElementById('blood-list');
+      el.innerHTML = '<div class="loading"><div class="spin"></div>Loading inventory…</div>';
+      try {
+        const r = await fetch(`${API}/api/blood`), data = await r.json();
+        if (r.ok && Array.isArray(data) && data.length) {
+          el.innerHTML = `<div class="ig">${data.map((b, i) => `
+        <div class="bc" style="animation-delay:${i * .05}s">
           <div class="bct">
-            <div><div class="btype">${b.bloodType||'?'}</div><div class="avl">${b.available?'● Available':'○ Unavail'}</div></div>
-            <div class="bq"><div class="bqn">${b.quantity??0}</div><div class="bqu">UNITS</div></div>
+            <div><div class="btype">${b.bloodType || '?'}</div><div class="avl">${b.available ? '● Available' : '○ Unavail'}</div></div>
+            <div class="bq"><div class="bqn">${b.quantity ?? 0}</div><div class="bqu">UNITS</div></div>
           </div>
           <div class="bcb">
-            <div class="br"><span class="bk">Institution</span><span class="bv">${b.institution||'—'}</span></div>
-            <div class="br"><span class="bk">Location</span><span class="bv">${b.location||'—'}</span></div>
-            <div class="bid">ID: ${b._id||'N/A'}</div>
+            <div class="br"><span class="bk">Institution</span><span class="bv">${b.institution || '—'}</span></div>
+            <div class="br"><span class="bk">Location</span><span class="bv">${b.location || '—'}</span></div>
+            <div class="bid">ID: ${b._id || 'N/A'}</div>
           </div>
         </div>`).join('')}</div>`;
-    }else{el.innerHTML='<div class="empty"><div class="ei">📭</div><h3>No records</h3><p>Nothing posted yet.</p></div>';}
-  }catch(e){el.innerHTML=`<div class="empty"><div class="ei">⚠️</div><h3>Error</h3><p>${e.message}</p></div>`;}
-}
+        } else { el.innerHTML = '<div class="empty"><div class="ei">📭</div><h3>No records</h3><p>Nothing posted yet.</p></div>'; }
+      } catch (e) { el.innerHTML = `<div class="empty"><div class="ei">⚠️</div><h3>Error</h3><p>${e.message}</p></div>`; }
+    }
 
-async function reqBlood(e){
-  e.preventDefault();
-  const h={'Content-Type':'application/json'};
-  if(token)h['Authorization']=`Bearer ${token}`;
-  try{const r=await fetch(`${API}/api/blood/request`,{method:'POST',headers:h,body:JSON.stringify({patientName:v('e1'),wardNo:v('e2'),hospitalName:v('e3'),hospitalAddress:v('e4'),bloodGroup:v('e5'),requestedInstitutions:v('e7').split(',').map(s=>s.trim()),status:v('e6')})});showResp('r6',await r.json(),r.ok);}
-  catch(e){showResp('r6',e.message,false);}
-}
-</script>
+    async function reqBlood(e) {
+      e.preventDefault();
+
+      const h = { 'Content-Type': 'application/json' };
+      if (token) h['Authorization'] = `Bearer ${token}`;
+
+      const bodyData = {
+        patientName: v('e1'),
+        wardNo: v('e2'),
+        hospitalName: v('e3'),
+        hospitalAddress: v('e4'),
+        bloodGroup: v('e5'),
+        requestedInstitutions: v('e7').split(',').map(s => s.trim()),
+        status: v('e6')
+      };
+
+      console.log("Sending body:", bodyData);
+
+      try {
+        const r = await fetch(`${API}/api/blood/request`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify(bodyData)
+        });
+
+        const data = await r.json();
+
+        console.log("Server response:", data);
+        console.log("Status:", r.status);
+
+        showResp('r6', data, r.ok);
+
+      } catch (err) {
+        console.error("Fetch error:", err);
+        showResp('r6', err.message, false);
+      }
+
+    }
+  </script>
 </body>
+
 </html>
