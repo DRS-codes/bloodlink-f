@@ -937,7 +937,7 @@
 
     async function loadInstitutions() {
       try {
-        const res = await fetch("http://localhost:5000/api/blood");
+        const res = await fetch("https://bloodlink-backend-y9lx.onrender.com/api/blood");
         const data = await res.json();
 
         const dropdown = document.getElementById("e7");
